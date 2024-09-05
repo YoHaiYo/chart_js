@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>D3.js Word Cloud</title>
+    <style>
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+        background-color: #f0f0f0;
+      }
+      #wordCloud {
+        width: 80%;
+        height: 80%;
+      }
+      text {
+        font-family: "Arial", sans-serif;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="wordCloud"></div>
+
+    <script src="https://d3js.org/d3.v6.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-cloud/1.2.5/d3.layout.cloud.min.js"></script>
+
+    <script>
+      const words = [
+        { text: "JavaScript", size: 90 },
+        { text: "HTML", size: 80 },
+        { text: "CSS", size: 70 },
+        { text: "React", size: 60 },
+        { text: "Node.js", size: 50 },
+        { text: "D3.js", size: 40 },
+        { text: "WordCloud", size: 100 },
+        { text: "Backend", size: 30 },
+        { text: "Frontend", size: 50 },
+        { text: "API", size: 40 },
+      ];
+
+      const width = document.getElementById("wordCloud").offsetWidth;
+      const height = document.getElementById("wordCloud").offsetHeight;
+
+      const color = d3.scaleOrdinal(d3.schemeCategory10);
+
+      d3.layout
+        .cloud()
+        .size([width, height])
+        .words(words.map((d) => ({ text: d.text, size: d.size })))
+        .padding(5)
+        .rotate(() => ~~(Math.random() * 2) * 90)
+        .font("Arial")
+        .fontSize((d) => d.size)
+        .on("end", draw)
+        .start();
+
+      function draw(words) {
+        d3.select("#wordCloud")
+          .append("svg")
+          .attr("width", width)
+          .attr("height", height)
+          .append("g")
+          .attr("transform", "translate(" + [width / 2, height / 2] + ")")
+          .selectAll("text")
+          .data(words)
+          .enter()
+          .append("text")
+          .style("font-size", (d) => d.size + "px")
+          .style("fill", (d, i) => color(i))
+          .attr("text-anchor", "middle")
+          .attr(
+            "transform",
+            (d) => "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")"
+          )
+          .text((d) => d.text)
+          .on("mouseover", function () {
+            d3.select(this).style("fill", "#FF6347").style("cursor", "pointer");
+          })
+          .on("mouseout", function () {
+            d3.select(this).style("fill", (d, i) => color(i));
+          });
+      }
+    </script>
+  </body>
+</html>

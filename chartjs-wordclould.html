@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Colorful Word Cloud with Chart.js</title>
+    <style>
+      body {
+        margin: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background-color: #f7f7f7;
+      }
+      canvas {
+        width: 80%;
+        height: auto;
+      }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-chart-wordcloud"></script>
+  </head>
+  <body>
+    <canvas id="myWordCloud"></canvas>
+
+    <script>
+      const ctx = document.getElementById("myWordCloud").getContext("2d");
+      const words = [
+        { text: "JavaScript", weight: 130 },
+        { text: "HTML", weight: 100.5 },
+        { text: "CSS", weight: 90.4 },
+        { text: "React", weight: 80 },
+        { text: "Node.js", weight: 60.2 },
+        { text: "Chart.js", weight: 50 },
+        { text: "WordCloud", weight: 105 },
+        { text: "Frontend", weight: 70 },
+        { text: "Backend", weight: 40 },
+        { text: "API", weight: 30 },
+      ];
+
+      const colors = [
+        "#FF6633",
+        "#FFB399",
+        "#FF33FF",
+        "#FFFF99",
+        "#00B3E6",
+        "#E6B333",
+        "#3366E6",
+        "#999966",
+        "#99FF99",
+        "#B34D4D",
+        "#80B300",
+        "#809900",
+        "#E6B3B3",
+        "#6680B3",
+        "#66991A",
+        "#FF99E6",
+        "#CCFF1A",
+        "#FF1A66",
+        "#E6331A",
+        "#33FFCC",
+      ];
+
+      new Chart(ctx, {
+        type: "wordCloud",
+        data: {
+          labels: words.map((word) => word.text),
+          datasets: [
+            {
+              label: "Word Cloud",
+              data: words.map((word) => word.weight),
+              backgroundColor: colors,
+            },
+          ],
+        },
+        options: {
+          plugins: {
+            legend: {
+              display: false,
+            },
+          },
+          elements: {
+            word: {
+              fontColor: function (context) {
+                return colors[context.dataIndex % colors.length];
+              },
+              fontSize: function (context) {
+                const value = context.raw;
+                return value * 5; // 폰트 크기 조정
+              },
+            },
+          },
+        },
+      });
+    </script>
+  </body>
+</html>
